@@ -1,10 +1,15 @@
 # Fred the Developer Design Document
 
-## Overview
-This document details the custom Excel Workbook properties that Fred uses to make his developer tools work.
+## How This Documentation is Organized
+
+Fred has several different types of documentaiton.
+
+- For detailed usage guidance on each of Fred's classes and methods, see the [Reference Guide](ReferenceGuide.md).
+- (IN PROGRESS) For example usage, see Tutorials.
+- The rest of this document details the custom Excel Workbook properties that Fred uses to make his developer tools work.
 
 ## Properties
-These are stored under Excel's built in `ThisWorkbook.CustomDocumentProperties`. By storing values here, you can use them in your other modules to guide behavior while debugging (such as controlling data logging output).
+These are stored under Excel's built in `ThisWorkbook.CustomDocumentProperties`. By storing values here, the set values persist not only between VBA run calls, but remain even if you close and reopen your workbook (assuming you saved, of course). Fred uses these behind the scenes when doing tasks such as logging debugging output.
 
 If the Type column refers to a [custom Fred enumeration](#enumerations), then the property is of type `msoPropertyTypeNumber`. Microsoft defines the available property types on their [Office VBA documentation](https://docs.microsoft.com/en-us/office/vba/api/office.msodocproperties).
 
@@ -17,7 +22,7 @@ If the Type column refers to a [custom Fred enumeration](#enumerations), then th
 
 ### fredDebugLogMode
 
-This enum is contained within the `fredDeveloper_Logging` class.
+This enum is contained within the `fredDeveloper` class.
 
 | Enum Name | Value | Description |
 | :-------- | :---: | :---------- |
@@ -27,6 +32,8 @@ This enum is contained within the `fredDeveloper_Logging` class.
 | `ToImmediateAndExternal`	|3| Debug lines will print to both the Immediate Window *and* the external file |
 
 ## Class Structure
+
+This is a high level overview of Fred's class and method structure. For more detailed information, see the [Reference Guide](ReferenceGuide.md).
 
 - fredDeveloper
   - fredDeveloper_Assert

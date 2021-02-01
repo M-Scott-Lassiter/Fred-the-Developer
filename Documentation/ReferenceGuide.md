@@ -1,0 +1,36 @@
+# User Guide
+
+- fredDeveloper
+  - fredDeveloper_Assert
+    - AreEqual
+    - AreNotEqual
+    - IsTrue
+    - IsFalse
+    - IsGreater
+    - IsGreaterOrEqual
+    - IsLess
+    - IsLessOrEqual
+    - Inconclusive
+    - CountSuccess
+    - CountFailure
+    - CountInconclusive
+    - Report
+  - fredDeveloper_ClientSettings
+    - Add
+    - Clear
+    - ClientSettingExists
+    - Delete
+  - fredDeveloper_ModuleManager
+    - CountAll
+    - CountClasses
+    - CountForms
+    - CountModules
+    - Directory
+    - Export
+    - Import
+  - RestoreDefaultSetting
+  - Log
+  - LoggingMode
+  - LoggingFilePath
+  - Tic
+  - Toc
