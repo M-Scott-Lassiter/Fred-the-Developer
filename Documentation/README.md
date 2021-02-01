@@ -26,12 +26,40 @@ This enum is contained within the `fredDeveloper_Logging` class.
 | `ToExternalOnly`	  	|2| Debug lines will print to an external file specified by [`DebugExternalFilePath`](#properties)|
 | `ToImmediateAndExternal`	|3| Debug lines will print to both the Immediate Window *and* the external file |
 
-## Classes
+## Class Structure
 
-### fredDeveloper
+- fredDeveloper
+  - fredDeveloper_Assert
+    - AreEqual
+    - AreNotEqual
+    - IsTrue
+    - IsFalse
+    - IsGreater
+    - IsGreaterOrEqual
+    - IsLess
+    - IsLessOrEqual
+    - Inconclusive
+    - CountSuccess
+    - CountFailure
+    - CountInconclusive
+    - Report
+  - fredDeveloper_ClientSettings
+    - Add
+    - Clear
+    - ClientSettingExists
+    - Delete
+  - fredDeveloper_ModuleManager
+    - CountAll
+    - CountClasses
+    - CountForms
+    - CountModules
+    - Directory
+    - Export
+    - Import
+  - RestoreDefaultSetting
+  - Log
+  - LoggingMode
+  - LoggingFilePath
+  - Tic
+  - Toc
 
-
-### fredDeveloper_CodeModules
-
-
-### fredDeveloper_Logging
