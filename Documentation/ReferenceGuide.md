@@ -1,7 +1,27 @@
-# User Guide
+# Reference Guide
 
-- fredDeveloper
-  - fredDeveloper_Assert
+## fredDeveloper
+
+**Classes**
+
+- [Assert](#freddeveloper_assert)
+- [ClientSettings](#freddeveloper_clientsettings)
+- [ModuleManager](#freddeveloper_modulemanager)
+
+**Methods**
+
+  - RestoreDefaultSetting
+  - Log
+  - LoggingMode
+  - LoggingFilePath
+  - Tic
+  - Toc
+
+
+## fredDeveloper_Assert
+
+**Methods**
+
     - AreEqual
     - AreNotEqual
     - IsTrue
@@ -15,12 +35,20 @@
     - CountFailure
     - CountInconclusive
     - Report
-  - fredDeveloper_ClientSettings
+
+## fredDeveloper_ClientSettings
+
+**Methods**
+
     - Add
     - Clear
     - ClientSettingExists
     - Delete
-  - fredDeveloper_ModuleManager
+
+## fredDeveloper_ModuleManager
+
+**Methods**
+
     - CountAll
     - CountClasses
     - CountForms
@@ -28,9 +56,3 @@
     - Directory
     - Export
     - Import
-  - RestoreDefaultSetting
-  - Log
-  - LoggingMode
-  - LoggingFilePath
-  - Tic
-  - Toc
