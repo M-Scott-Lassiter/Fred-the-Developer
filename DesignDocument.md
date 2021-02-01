@@ -10,14 +10,14 @@ If the Type column refers to a [custom Fred enumeration](#enumerations), then th
 
 | Field Name | Document Property Type | Description | Default Value |
 | :--------- | :----: | :---------- | :----: |
-| `DebugLogging` | *msoPropertyTypeNumber* | Of type [*ctgxDebugLogMode*](#freddebuglogmode). If not set to `Disabled`, then during run time any debugging lines will write to the Immediate Window, an external file path as specified in `DebugExternalFileLoggingPath`, or both | `Disabled` |
-| `DebugExternalFilePath` | *msoPropertyTypeString* | If `DebugLogging` set to an external mode, debug lines will write to the text file log specified by the parameter `ExternalFileLoggingPath` | `ThisWorkbook.Path` |
+| `DebugLogging` | *msoPropertyTypeNumber* | Of type [*fredDebugLogMode*](#freddebuglogmode). If not set to `Disabled`, then during run time any debugging lines will write to the Immediate Window, an external file path as specified in `DebugExternalFileLoggingPath`, or both | `Disabled` |
+| `DebugExternalFilePath` | *msoPropertyTypeString* | If `DebugLogging` set to an external mode, debug lines will write to the text file log specified within this parameter | `ThisWorkbook.Path` |
 
 ## Enumerations
 
 ### fredDebugLogMode
 
-This enum is contained within the `fredDeveloper` class.
+This enum is contained within the `fredDeveloper_Logging` class.
 
 | Enum Name | Value | Description |
 | :-------- | :---: | :---------- |
