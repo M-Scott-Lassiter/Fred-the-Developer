@@ -42,7 +42,9 @@ To use it in your project, either
 
 ## Example Use
 
-This sub resides in a normal code module and demonstrates how you might use Fred as a developer. It exports three code modules to the "Source Code" folder in the workbook's path then logs the results to "FredTheDeveloper_DebugLog.txt" as well as the Immediate window in the VBA IDE. The `dev.Tic` and `dev.Toc` functions work together to measure how long it took to run that code segment.
+This sub resides in a normal code module and demonstrates how you might use Fred as a developer. 
+
+It exports three code modules to the "Source Code" folder in the workbook's path then logs the results to "FredTheDeveloper_DebugLog.txt" as well as the Immediate window in the VBA IDE. The `dev.Tic` and `dev.Toc` functions work together to measure how long it took to run that code segment.
 
 ```VBA
 Sub ExportCodeModulesWithFred()
@@ -65,7 +67,7 @@ Sub ExportCodeModulesWithFred()
 End Sub
 ```
 
-Learn how to use all of the functions in the [documentation](/Documentation/ReferenceGuide.md)!
+Learn how to use all of the functions in the [Reference Guide](/Documentation/ReferenceGuide.md)!
 
 
 ## Project Roadmap
