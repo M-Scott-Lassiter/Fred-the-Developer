@@ -44,7 +44,7 @@ To use it in your project, either
 
 This sub resides in a normal code module and demonstrates how you might use Fred as a developer. It exports three code modules to the "Source Code" folder in the workbook's path then logs the results to "FredTheDeveloper_DebugLog.txt" as well as the Immediate window in the VBA IDE. The `dev.Tic` and `dev.Toc` functions work together to measure how long it took to run that code segment.
 
-'''vba
+'''VBA
 Sub ExportCodeModulesWithFred()
 
     Dim dev As New fredDeveloper
