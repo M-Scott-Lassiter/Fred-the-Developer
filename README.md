@@ -72,9 +72,9 @@ Learn how to use all of the functions in the [documentation](/Documentation/Refe
 
 This project is in Beta phase. 
 
-The next major addition is the [Assert class](/projects/1) which will take it to [version 1.0](/milestone/1).
+The next major addition is the [Assert class](/../../projects/1) which will take it to [version 1.0](/../../milestone/1).
 
-See the open [issues](/issues) to see what work is coming up. The [Bug Fixing](/projects/2) board tracks known bug status.
+See the open [issues](/../../issues) to see what work is coming up. The [Bug Fixing](/../../projects/2) board tracks known bug status.
 
 
 ### Contributing
@@ -96,5 +96,3 @@ Distributed under the MIT License. See [LICENSE](/blob/main/LICENSE) for more in
 ## Contact
 
 Reach me on Twitter [@mscottlassiter](https://twitter.com/MScottLassiter) or on [LinkedIn](https://www.linkedin.com/in/mscottlassiter/)
-
-Project Link: https://github.com/your_username/repo_name.
