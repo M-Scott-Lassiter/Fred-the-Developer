@@ -32,29 +32,41 @@ Attribute VB_Exposed = False
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
-Private NumSuccessful As Long
-Private NumFailed As Long
-Private NumInconclusive As Long
+Public Enum TestType    'Used for test battery reporting functionality, particularly with the TestsInError function
+    [_First]
+    TestFailed = 0
+    TestInconclusive
+    [_Last]
+End Enum
 
+Private numSuccessful As Long
+Private numFailed As Long
+Private numInconclusive As Long
+Private failedDict As Object
+Private inconclusiveDict As Object
 
 Private Sub Class_Initialize()
     
-    NumSuccessful = 0
-    NumFailed = 0
-    NumInconclusive = 0
+    numSuccessful = 0
+    numFailed = 0
+    numInconclusive = 0
     
+    'Use Scripting Dictionaries to track the names of tests that fail and are inconclusive. Not concerned about tests that passed.
+    Set failedDict = CreateObject("Scripting.Dictionary")
+    Set inconclusiveDict = CreateObject("Scripting.Dictionary")
+
 End Sub
 
 
-Public Sub AreEqual(Value1 As Variant, Value2 As Variant)
+Public Sub AreEqual(Value1 As Variant, Value2 As Variant, TestName As String)
     'Does comparisons based on VBA's implicit type conversions. For example, AreEqual("1",1) would be true.
     
     On Error GoTo TestInconclusivePoint
     
     If Value1 = Value2 Then
-        NumSuccessful = NumSuccessful + 1
+        numSuccessful = numSuccessful + 1
     Else
-        NumFailed = NumFailed + 1
+        numFailed = numFailed + 1
     End If
     
     On Error GoTo 0
@@ -62,27 +74,73 @@ Public Sub AreEqual(Value1 As Variant, Value2 As Variant)
     
 TestInconclusivePoint:
     On Error GoTo 0
-    NumInconclusive = NumInconclusive + 1
+    numInconclusive = numInconclusive + 1
     
 End Sub
+
+Public Property Get Report() As String
+    'Returns a string, possibly on multiple lines, detailing how the current test battery went.
+    
+    If numSuccessful + numFailed + numInconclusive = 0 Then
+        Report = "No tests run."
+        
+    ElseIf numSuccessful > 1 And numFailed + numInconclusive = 0 Then   'All tests were successful
+        Report = "Test battery complete. Ran " & numSuccessful & " tests."
+        
+    Else
+        'At least one test has been run, but something wasn't right. Go into detail about it.
+        Report = "Test battery complete. Issues detected." & vbCrLf
+        Report = "Successful: " & numSuccessful & vbCrLf
+        
+        'Report the failed tests
+        Report = Report & "Failed: " & numFailed & vbCrLf
+        If numFailed > 0 Then Report = Report & "Failed Tests: " & TestsInErrorString(TestFailed) & vbCrLf
+        
+        'Report the inconclusive tests
+        Report = Report & "Inconclusive: " & numInconclusive & vbCrLf
+        If numInconclusive > 0 Then Report = Report & "Inconclusive Tests: " & TestsInErrorString(TestInconclusive)
+        
+    End If
+    
+End Property
+
+Private Function TestsInErrorString(TypeToReport As TestType) As String
+    'This function returns a comma separated list of all recorded failed or inconclusive tests. Helper function to the property Report.
+    
+    Dim dict As Object
+    Dim dictKey As Variant
+    
+    If TypeToReport = TestFailed Then
+        Set dict = failedDict
+    ElseIf TypeToReport = TestInconclusive Then
+        Set dict = inconclusiveDict
+    End If
+    
+    For Each dictKey In dict
+        TestsInErrorString = TestsInErrorString & dictKey & ", "
+    Next dictKey
+    
+    TestsInErrorString = Left(TestsInErrorString, Len(TestsInErrorString) - 2)  'Remove the trailing ", "
+    
+End Function
 
 Public Property Get Failed() As Long
     'Number of successful tests that have been run since class was initialized/reset
     
-    Successful = NumFailed
+    Successful = numFailed
     
 End Property
 
 Public Property Get Inconclusive() As Long
     'Number of successful tests that have been run since class was initialized/reset
     
-    Successful = NumInconclusive
+    Successful = numInconclusive
     
 End Property
 
 Public Property Get Successful() As Long
     'Number of successful tests that have been run since class was initialized/reset
     
-    Successful = NumSuccessful
+    Successful = numSuccessful
     
 End Property
