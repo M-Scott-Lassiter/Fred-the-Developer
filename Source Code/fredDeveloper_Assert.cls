@@ -94,17 +94,17 @@ Public Property Get Report() As String
         
         'Report the failed tests
         Report = Report & "Failed: " & numFailed & vbCrLf
-        If numFailed > 0 Then Report = Report & "Failed Tests: " & TestsInErrorString(TestFailed) & vbCrLf
+        If numFailed > 0 Then Report = Report & "Failed Tests: " & TestsInError(TestFailed) & vbCrLf
         
         'Report the inconclusive tests
         Report = Report & "Inconclusive: " & numInconclusive & vbCrLf
-        If numInconclusive > 0 Then Report = Report & "Inconclusive Tests: " & TestsInErrorString(TestInconclusive)
+        If numInconclusive > 0 Then Report = Report & "Inconclusive Tests: " & TestsInError(TestInconclusive)
         
     End If
     
 End Property
 
-Private Function TestsInErrorString(TypeToReport As TestType) As String
+Private Function TestsInError(TypeToReport As TestType) As String
     'This function returns a comma separated list of all recorded failed or inconclusive tests. Helper function to the property Report.
     
     Dim dict As Object
