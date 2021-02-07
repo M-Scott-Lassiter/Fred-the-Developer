@@ -32,16 +32,16 @@ Attribute VB_Exposed = False
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
-Private numSuccessful As Long
-Private numFailed As Long
-Private numInconclusive As Long
+Private NumSuccessful As Long
+Private NumFailed As Long
+Private NumInconclusive As Long
 
 
 Private Sub Class_Initialize()
     
-    numSuccessful = 0
-    numFailed = 0
-    numInconclusive = 0
+    NumSuccessful = 0
+    NumFailed = 0
+    NumInconclusive = 0
     
 End Sub
 
@@ -52,9 +52,9 @@ Public Sub AreEqual(Value1 As Variant, Value2 As Variant)
     On Error GoTo TestInconclusivePoint
     
     If Value1 = Value2 Then
-        numSuccessful = numSuccessful + 1
+        NumSuccessful = NumSuccessful + 1
     Else
-        numFailed = numFailed + 1
+        NumFailed = NumFailed + 1
     End If
     
     On Error GoTo 0
@@ -62,8 +62,27 @@ Public Sub AreEqual(Value1 As Variant, Value2 As Variant)
     
 TestInconclusivePoint:
     On Error GoTo 0
-    numInconclusive = numInconclusive + 1
+    NumInconclusive = NumInconclusive + 1
     
 End Sub
 
+Public Property Get Failed() As Long
+    'Number of successful tests that have been run since class was initialized/reset
+    
+    Successful = NumFailed
+    
+End Property
 
+Public Property Get Inconclusive() As Long
+    'Number of successful tests that have been run since class was initialized/reset
+    
+    Successful = NumInconclusive
+    
+End Property
+
+Public Property Get Successful() As Long
+    'Number of successful tests that have been run since class was initialized/reset
+    
+    Successful = NumSuccessful
+    
+End Property
