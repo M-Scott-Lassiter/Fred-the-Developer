@@ -127,14 +127,14 @@ End Function
 Public Property Get Failed() As Long
     'Number of successful tests that have been run since class was initialized/reset
     
-    Successful = numFailed
+    Failed = numFailed
     
 End Property
 
 Public Property Get Inconclusive() As Long
     'Number of successful tests that have been run since class was initialized/reset
     
-    Successful = numInconclusive
+    Inconclusive = numInconclusive
     
 End Property
 
