@@ -32,4 +32,38 @@ Attribute VB_Exposed = False
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
+Private numSuccessful As Long
+Private numFailed As Long
+Private numInconclusive As Long
+
+
+Private Sub Class_Initialize()
+    
+    numSuccessful = 0
+    numFailed = 0
+    numInconclusive = 0
+    
+End Sub
+
+
+Public Sub AreEqual(Value1 As Variant, Value2 As Variant)
+    'Does comparisons based on VBA's implicit type conversions. For example, AreEqual("1",1) would be true.
+    
+    On Error GoTo TestInconclusivePoint
+    
+    If Value1 = Value2 Then
+        numSuccessful = numSuccessful + 1
+    Else
+        numFailed = numFailed + 1
+    End If
+    
+    On Error GoTo 0
+    Exit Sub
+    
+TestInconclusivePoint:
+    On Error GoTo 0
+    numInconclusive = numInconclusive + 1
+    
+End Sub
+
 
