@@ -84,8 +84,9 @@ Public Property Get Report() As String
     If numSuccessful + numFailed + numInconclusive = 0 Then
         Report = "No tests run."
         
-    ElseIf numSuccessful > 1 And numFailed + numInconclusive = 0 Then   'All tests were successful
-        Report = "Test battery complete. Ran " & numSuccessful & " tests."
+    ElseIf numSuccessful > 0 And numFailed + numInconclusive = 0 Then   'All tests were successful
+        Report = "Test battery complete. Ran " & numSuccessful
+        If numSuccessful = 1 Then Report = Report & " test." Else Report = Report & " tests."
         
     Else
         'At least one test has been run, but something wasn't right. Go into detail about it.
@@ -117,10 +118,11 @@ Private Function TestsInError(TypeToReport As TestType) As String
     End If
     
     For Each dictKey In dict
-        TestsInErrorString = TestsInErrorString & dictKey & ", "
+        TestsInError = TestsInError & dictKey & ", "
     Next dictKey
     
-    TestsInErrorString = Left(TestsInErrorString, Len(TestsInErrorString) - 2)  'Remove the trailing ", "
+    If Len(TestsInError) <= 2 Then Exit Function    'If the next line tries to run with a string length <2, it will cause an error
+    TestsInError = Left(TestsInError, Len(TestsInError) - 2)  'Remove the trailing ", "
     
 End Function
 
