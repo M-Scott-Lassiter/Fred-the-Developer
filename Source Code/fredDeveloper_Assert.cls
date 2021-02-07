@@ -67,6 +67,7 @@ Public Sub AreEqual(Value1 As Variant, Value2 As Variant, TestName As String)
         numSuccessful = numSuccessful + 1
     Else
         numFailed = numFailed + 1
+        failedDict.Add TestName, False
     End If
     
     On Error GoTo 0
@@ -75,6 +76,7 @@ Public Sub AreEqual(Value1 As Variant, Value2 As Variant, TestName As String)
 TestInconclusivePoint:
     On Error GoTo 0
     numInconclusive = numInconclusive + 1
+    inconclusiveDict.Add TestName, False
     
 End Sub
 
@@ -91,7 +93,7 @@ Public Property Get Report() As String
     Else
         'At least one test has been run, but something wasn't right. Go into detail about it.
         Report = "Test battery complete. Issues detected." & vbCrLf
-        Report = "Successful: " & numSuccessful & vbCrLf
+        Report = Report & "Successful: " & numSuccessful & vbCrLf
         
         'Report the failed tests
         Report = Report & "Failed: " & numFailed & vbCrLf
