@@ -194,7 +194,9 @@ Public Property Let Directory(FilePath As String)
 End Property
 
 Public Property Get Directory() As String
+
     Directory = ExternalCodeDirectory
+    
 End Property
 
 Public Property Get CountAll() As String
