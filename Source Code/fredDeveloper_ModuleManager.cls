@@ -34,9 +34,11 @@ Option Explicit
 
 Private ExternalCodeDirectory As String
 Private VBProject As Object
-Private fso As New Scripting.FileSystemObject
+Private fso As Object   'FileScriptingObject
 
 Private Sub Class_Initialize()
+    
+    Set fso = CreateObject("Scripting.FileSystemObject")
     
     'Not having trust access settings right will throw a 429 error. This class will thus be useless.
     On Error Resume Next
@@ -126,13 +128,15 @@ Public Sub Import(Optional ModuleList As String)
     'Requires user to set "Trust access to the VBA vbproject object model" in the Macro Security settings. If not enabled,
     '   this sub will gracefully exit without doing anything.
     
-    Dim fsofile As Scripting.File
+    Dim fsofile As Object
     Dim ModuleArray() As String
     Dim ImportFlag As Boolean
     Dim FileExtension As String
     Dim i As Integer, j As Integer
     
     If VBProject Is Nothing Then Exit Sub
+    
+    Set fsofile = CreateObject("Scripting.File")
     
     'If the optional ModuleList parameter was used, format the input string into a well trimmed array
     If ModuleList <> "" Then

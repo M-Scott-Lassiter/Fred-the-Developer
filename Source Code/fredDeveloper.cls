@@ -42,7 +42,7 @@ Public Enum fredDebugLogMode
 End Enum
 
 Private cdp As Object   'Custom Document Properties, declared in Initialization
-Private fso As New Scripting.FileSystemObject
+Private fso As Object   'FileScriptingObject
 
 'Private DevMode As Boolean
 Private dev_ModuleManager As New fredDeveloper_ModuleManager
@@ -51,7 +51,8 @@ Private TicToc As Single
 
 Private Sub Class_Initialize()
     Set cdp = ThisWorkbook.CustomDocumentProperties
-
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
     'Makes sure the values are available for use, but does nothing to verify they are
     '   the correct type and the names were not coopted by some other program or user.
     dev_ClientSettings.Add "DebugLogging", msoPropertyTypeNumber, fredDebugLogMode.Disabled
