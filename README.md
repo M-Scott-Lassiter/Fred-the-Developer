@@ -1,5 +1,6 @@
 # Fred the Developer
-A standalone VBA development framework to enable better debugging, source control, and Test Driven Development in Excel VBA.
+
+Enhance your projects with a standalone VBA development framework that provides debugging, source control, and Test Driven Development tools with 100% VBA.
 
 ## About the Project
 
