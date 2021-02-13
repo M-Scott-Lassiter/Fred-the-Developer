@@ -228,6 +228,14 @@ TestInconclusivePoint:
     
 End Sub
 
+Public Sub IsInconclusive(TestName As String)
+    'Used to immediately flag a test as inconclusive without further ado. Useful when initially constructing tests as a reminder that they are unfinished.
+    
+    numInconclusive = numInconclusive + 1
+    inconclusiveDict.Add TestName, False
+    
+End Sub
+
 Public Property Get Report() As String
     'Returns a string, possibly on multiple lines, detailing how the current test battery went.
     
