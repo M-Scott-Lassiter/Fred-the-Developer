@@ -1,2 +1,5 @@
 # Workbooks - Temporary while working
 *.xlsm
+
+# Log file
+Fred-the-Developer0.1.0_DebugLog.txt
