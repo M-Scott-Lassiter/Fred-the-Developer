@@ -59,7 +59,7 @@ End Sub
 
 
 Public Sub AreEqual(Value1 As Variant, Value2 As Variant, TestName As String)
-    'Does comparisons based on VBA's implicit type conversions. For example, AreEqual("1",1) would be true.
+    'Does comparisons based on VBA's implicit type conversions. For example, AreEqual("1",1) would be successful.
     
     On Error GoTo TestInconclusivePoint
     
@@ -92,7 +92,7 @@ Public Property Get Report() As String
         
     Else
         'At least one test has been run, but something wasn't right. Go into detail about it.
-        Report = "Test battery complete. Issues detected." & vbCrLf
+        Report = "Test battery complete. " & numFailed + numInconclusive & " issues detected." & vbCrLf
         Report = Report & "Successful: " & numSuccessful & vbCrLf
         
         'Report the failed tests
