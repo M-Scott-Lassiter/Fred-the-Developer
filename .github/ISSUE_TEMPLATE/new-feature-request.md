@@ -7,6 +7,4 @@ assignees: ''
 
 ---
 
-As a <user or stakeholder type>
-I want <some software feature>
-So that <some business value>
+As a [end user/developer/maintainer], I want <some software feature> so that <some business value>.
