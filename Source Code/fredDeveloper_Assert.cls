@@ -123,6 +123,27 @@ TestInconclusivePoint:
     
 End Sub
 
+Public Sub IsFalse(Value1 As Variant, TestName As String)
+    
+    On Error GoTo TestInconclusivePoint
+    
+    If Value1 = False Then
+        numSuccessful = numSuccessful + 1
+    Else
+        numFailed = numFailed + 1
+        failedDict.Add TestName, False
+    End If
+    
+    On Error GoTo 0
+    Exit Sub
+    
+TestInconclusivePoint:
+    On Error GoTo 0
+    numInconclusive = numInconclusive + 1
+    inconclusiveDict.Add TestName, False
+    
+End Sub
+
 Public Property Get Report() As String
     'Returns a string, possibly on multiple lines, detailing how the current test battery went.
     
