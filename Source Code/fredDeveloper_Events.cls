@@ -190,11 +190,15 @@ Public Property Let LoggingFilePath(FilePathAddress As String)
     'If the specified path exists, then update the cdp path address and set the object equal to the file. However, if the path does NOT exist, give the user
     '   a chance to create it. If they do, great! Proceed as planned. However, we don't want to create unexpected files on their computer. So, if the user
     '   decides to NOT create this file, not only will the cdp get left as is, the LoggingMode will get set to either Disabled or ToImmediateOnly.
+    'This property makes use of the CDPs. However, if those were not setup, we want to gracefully fail so that the user can still use this class by
+    '   manually setting this variable each time it's called instead of having that setting persist.
     
     Dim MsgResponse As Integer
+    Dim propertyTest As String
     
     FilePathAddress = CleanFilePath(FilePathAddress)
     
+    'Test if this file even exists or not
     If Not (fso.FileExists(FilePathAddress)) Then
         MsgResponse = MsgBox("This file does not exist. Would you like to create it?", vbYesNo, "File Not Found")
         If MsgResponse = vbYes Then
@@ -206,13 +210,32 @@ Public Property Let LoggingFilePath(FilePathAddress As String)
         End If
     End If
     
-    cdp("DebugExternalFilePath") = FilePathAddress
+    'Set the end use variables as required
+    On Error Resume Next
+    propertyTest = cdp("DebugExternalFilePath")
+    If Err <> 0 Then
+        cdp("DebugExternalFilePath") = FilePathAddress  'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
+        localLoggingFilePath = propertyTest
+    Else
+        LoggingFilePath = localLoggingFilePath      'The CDP wasn't set up, just use the local variable.
+    End If
+    On Error GoTo 0
 
 End Property
 
 Public Property Get LoggingFilePath() As String
     
-    LoggingFilePath = cdp("DebugExternalFilePath")
+    Dim propertyTest As String
+    
+    On Error Resume Next
+    propertyTest = cdp("DebugExternalFilePath")
+    If Err <> 0 Then
+        LoggingFilePath = propertyTest          'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
+        localLoggingFilePath = propertyTest
+    Else
+        LoggingFilePath = localLoggingFilePath      'The CDP wasn't set up, just use the local variable.
+    End If
+    On Error GoTo 0
 
 End Property
 
