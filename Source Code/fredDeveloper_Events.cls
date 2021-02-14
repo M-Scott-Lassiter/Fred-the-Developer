@@ -193,7 +193,7 @@ Public Property Get LoggingMode() As fredDebugLogMode
     
     On Error Resume Next
     propertyTest = cdp("DebugLogging")
-    If Err <> 0 Then
+    If Err = 0 Then
         LoggingMode = propertyTest          'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
         localLoggingMode = propertyTest
     Else
