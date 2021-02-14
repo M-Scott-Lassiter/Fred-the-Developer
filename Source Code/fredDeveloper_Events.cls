@@ -43,11 +43,17 @@ Public Enum fredDebugLogMode
     [_Last]
 End Enum
 
+Public Enum fredEventSettings
+    [_First]
+    DebugLogging = 0
+    DebugExternalFilePath
+    [_Last]
+End Enum
+
 Private cdp As Object   'Custom Document Properties, declared in Initialization
 Private fso As Object   'FileScriptingObject
 Private dev_ClientSettings As Object
 
-'Private DevMode As Boolean
 Private TicToc As Single
 Private localLoggingMode As Integer
 Private localLoggingFilePath As String
@@ -75,9 +81,6 @@ Private Sub Class_Initialize()
     End If
     On Error GoTo 0
     
-    
-
-    
     TicToc = Timer
     
 End Sub
@@ -88,15 +91,18 @@ Private Function DefaultLoggingFilePathAddress() As String
 
 End Function
 
-Public Sub RestoreDefaultSetting(Optional SettingName As String)
+Public Sub RestoreDefaultSetting(SettingName As fredEventSettings)
     'Force deletes the setting then reinitializes the class to establish the default. Leave SettingName blank to restore all settings to default.
     
-    If SettingName = "" Then
-        dev_ClientSettings.Delete ("DebugLogging")
-        dev_ClientSettings.Delete ("DebugExternalFilePath")
-    Else
-        dev_ClientSettings.Delete (SettingName)
+    Dim dev_ClientSettings As Object
+    
+    On Error Resume Next
+    Set dev_ClientSettings = CreateObject("fredDeveloper_ClientSettings")
+    If Err = 0 Then 'End user has this class available, go ahead and use it.
+        If SettingName = DebugLogging Then dev_ClientSettings.Delete ("DebugLogging")
+        If SettingName = DebugExternalFilePath Then dev_ClientSettings.Delete ("DebugExternalFilePath")
     End If
+    On Error GoTo 0
     
     Call Class_Initialize
     
