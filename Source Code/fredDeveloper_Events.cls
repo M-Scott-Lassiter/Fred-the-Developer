@@ -56,26 +56,37 @@ Private Sub Class_Initialize()
     
     Dim dev_ClientSettings As Object
     
+    Set cdp = ThisWorkbook.CustomDocumentProperties
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
     On Error Resume Next
     Set dev_ClientSettings = CreateObject("fredDeveloper_ClientSettings")
     If Err = 0 Then 'End user has this class available, go ahead and use it.
         dev_ClientSettings.Add "DebugLogging", msoPropertyTypeNumber, fredDebugLogMode.Disabled
-        dev_ClientSettings.Add "DebugExternalFilePath", msoPropertyTypeString, ThisWorkbook.Path & "\" & fso.GetBaseName(Replace(ThisWorkbook.Name, " ", "")) & "_DebugLog.txt"     '\WorkbookDirectory\WorkbookName_DebugLog.txt
+        dev_ClientSettings.Add "DebugExternalFilePath", msoPropertyTypeString, DefaultLoggingFilePathAddress
+        
+        'Makes sure the values are available for use, but does nothing to verify they are
+        '   the correct type and the names were not coopted by some other program or user.
+        localLoggingMode = cdp("DebugLogging")        'Immediate only
+        localLoggingFilePath = cdp("DebugExternalFilePath")
+    Else
+        localLoggingMode = 1        'Immediate only
+        localLoggingFilePath = DefaultLoggingFilePathAddress
     End If
     On Error GoTo 0
     
-    Set cdp = ThisWorkbook.CustomDocumentProperties
-    Set fso = CreateObject("Scripting.FileSystemObject")
     
-    localLoggingMode = 1        'Immediate only
-    localLoggingFilePath = ""
-    
-    'Makes sure the values are available for use, but does nothing to verify they are
-    '   the correct type and the names were not coopted by some other program or user.
+
     
     TicToc = Timer
     
 End Sub
+
+Private Function DefaultLoggingFilePathAddress() As String
+
+    DefaultLoggingFilePathAddress = ThisWorkbook.Path & "\" & fso.GetBaseName(Replace(ThisWorkbook.Name, " ", "")) & "_DebugLog.txt"    '\WorkbookDirectory\WorkbookName_DebugLog.txt
+
+End Function
 
 Public Sub RestoreDefaultSetting(Optional SettingName As String)
     'Force deletes the setting then reinitializes the class to establish the default. Leave SettingName blank to restore all settings to default.
@@ -140,7 +151,7 @@ Private Sub LogToExternalTextFile(LogEntry As String)
     
     Dim LogFile As Object
     
-    Open cdp("DebugExternalFilePath") For Append As #1
+    Open LoggingFilePath For Append As #1
     
     Print #1, DateTime & "|" & Application.UserName & "|" & LogEntry
     
