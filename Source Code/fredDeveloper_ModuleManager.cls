@@ -138,7 +138,7 @@ Public Sub Import(Optional ModuleList As String)
     
     If VBProject Is Nothing Then Exit Sub
     
-    Set fsofile = CreateObject("Scripting.File")
+    'Set fsofile = fso.File
     
     'If the optional ModuleList parameter was used, format the input string into a well trimmed array
     If ModuleList <> "" Then
@@ -165,7 +165,10 @@ Public Sub Import(Optional ModuleList As String)
             End If
             
             If ImportFlag Then
+                On Error Resume Next    'Remove this module if it exists to prevent conflicts. If it doesn't exist, the next line will throw an error
                 VBProject.VBComponents.Remove VBProject.VBComponents(fso.GetBaseName(fsofile.Path))
+                On Error GoTo 0
+                
                 VBProject.VBComponents.Import fsofile.Path
             End If
             ImportFlag = False
