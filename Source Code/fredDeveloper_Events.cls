@@ -243,7 +243,7 @@ Public Property Get LoggingFilePath() As String
     
     On Error Resume Next
     propertyTest = cdp("DebugExternalFilePath")
-    If Err <> 0 Then
+    If Err = 0 Then
         LoggingFilePath = propertyTest          'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
         localLoggingFilePath = propertyTest
     Else
