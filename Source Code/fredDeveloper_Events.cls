@@ -180,7 +180,7 @@ Public Property Let LoggingMode(LogMode As fredDebugLogMode)
     
     On Error Resume Next
     propertyTest = cdp("DebugLogging")
-    If Err <> 0 Then cdp("DebugLogging") = LogMode   'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
+    If Err = 0 Then cdp("DebugLogging") = LogMode   'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
     On Error GoTo 0
     
     localLoggingMode = LogMode
@@ -230,14 +230,11 @@ Public Property Let LoggingFilePath(FilePathAddress As String)
     'Set the end use variables as required
     On Error Resume Next
     propertyTest = cdp("DebugExternalFilePath")
-    If Err <> 0 Then
-        cdp("DebugExternalFilePath") = FilePathAddress  'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
-        localLoggingFilePath = propertyTest
-    Else
-        LoggingFilePath = localLoggingFilePath      'The CDP wasn't set up, just use the local variable.
-    End If
+    If Err = 0 Then cdp("DebugExternalFilePath") = FilePathAddress  'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
     On Error GoTo 0
-
+    
+    localLoggingFilePath = FilePathAddress
+    
 End Property
 
 Public Property Get LoggingFilePath() As String
