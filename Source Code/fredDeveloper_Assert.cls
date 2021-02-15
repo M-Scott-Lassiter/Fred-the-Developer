@@ -34,13 +34,6 @@ Attribute VB_Exposed = False
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
-Public Enum TestType    'Used for test battery reporting functionality, particularly with the TestsInError function
-    [_First]
-    TestFailed = 0
-    TestInconclusive
-    [_Last]
-End Enum
-
 Private numSuccessful As Long
 Private numFailed As Long
 Private numInconclusive As Long
@@ -254,37 +247,51 @@ Public Property Get Report() As String
         Report = Report & "Successful: " & numSuccessful & vbCrLf
         
         'Report the failed tests
-        Report = Report & "Failed: " & numFailed & vbCrLf
-        If numFailed > 0 Then Report = Report & "Failed Tests: " & TestsInError(TestFailed) & vbCrLf
+        Report = Report & "Failed: " & numFailed
+        If numFailed > 0 Then Report = Report & " (" & FailedTestList & ")"
+        Report = Report & vbCrLf
         
         'Report the inconclusive tests
-        Report = Report & "Inconclusive: " & numInconclusive & vbCrLf
-        If numInconclusive > 0 Then Report = Report & "Inconclusive Tests: " & TestsInError(TestInconclusive)
+        Report = Report & "Inconclusive: " & numInconclusive
+        If numInconclusive > 0 Then Report = Report & " (" & InconclusiveTestList & ")"
         
     End If
     
 End Property
 
-Private Function TestsInError(TypeToReport As TestType) As String
-    'This function returns a comma separated list of all recorded failed or inconclusive tests. Helper function to the property Report.
+Private Property Get FailedTestList() As String
+    'This function returns a comma separated list of all recorded failed tests. If there weren't any, it returns "None"
     
-    Dim dict As Object
     Dim dictKey As Variant
     
-    If TypeToReport = TestFailed Then
-        Set dict = failedDict
-    ElseIf TypeToReport = TestInconclusive Then
-        Set dict = inconclusiveDict
+    If failedDict.Count = 0 Then
+        FailedTestList = "None"
+    Else
+        For Each dictKey In failedDict
+            FailedTestList = FailedTestList & dictKey & ", "
+        Next dictKey
+    
+        FailedTestList = Left(FailedTestList, Len(FailedTestList) - 2)  'Remove the trailing ", "
     End If
     
-    For Each dictKey In dict
-        TestsInError = TestsInError & dictKey & ", "
-    Next dictKey
+End Property
+
+Private Property Get InconclusiveTestList() As String
+    'This function returns a comma separated list of all recorded inconclusive tests. If there weren't any, it returns "None"
     
-    If Len(TestsInError) <= 2 Then Exit Function    'If the next line tries to run with a string length <2, it will cause an error
-    TestsInError = Left(TestsInError, Len(TestsInError) - 2)  'Remove the trailing ", "
+    Dim dictKey As Variant
     
-End Function
+    If inconclusiveDict.Count = 0 Then
+        InconclusiveTestList = "None"
+    Else
+        For Each dictKey In inconclusiveDict
+            InconclusiveTestList = InconclusiveTestList & dictKey & ", "
+        Next dictKey
+    
+        InconclusiveTestList = Left(InconclusiveTestList, Len(InconclusiveTestList) - 2)  'Remove the trailing ", "
+    End If
+    
+End Property
 
 Public Property Get Failed() As Long
     'Number of successful tests that have been run since class was initialized/reset
