@@ -52,57 +52,65 @@ End Enum
 
 Private cdp As Object   'Custom Document Properties, declared in Initialization
 Private fso As Object   'FileScriptingObject
-Private dev_ClientSettings As Object
 
 Private TicToc As Single
-Private localLoggingMode As Integer
-Private localLoggingFilePath As String
 
 Private Sub Class_Initialize()
     
-    Dim dev_ClientSettings As Object
+    Dim localLoggingMode As Integer
+    Dim localLoggingFilePath As String
     
     Set cdp = ThisWorkbook.CustomDocumentProperties
     Set fso = CreateObject("Scripting.FileSystemObject")
     
-    On Error Resume Next
-    Set dev_ClientSettings = CreateObject("fredDeveloper_ClientSettings")
-    If Err = 0 Then 'End user has this class available, go ahead and use it.
-        dev_ClientSettings.Add "DebugLogging", msoPropertyTypeNumber, fredDebugLogMode.Disabled
-        dev_ClientSettings.Add "DebugExternalFilePath", msoPropertyTypeString, DefaultLoggingFilePathAddress
-        
-        'Makes sure the values are available for use, but does nothing to verify they are
-        '   the correct type and the names were not coopted by some other program or user.
-        localLoggingMode = cdp("DebugLogging")        'Immediate only
-        localLoggingFilePath = cdp("DebugExternalFilePath")
-    Else
-        localLoggingMode = 1        'Immediate only
-        localLoggingFilePath = DefaultLoggingFilePathAddress
-    End If
+    On Error Resume Next    'If the saved values aren't already available, create them.
+                            'Makes sure the values are available for use, but does nothing to verify they are
+                            'the correct type and the names were not coopted by some other program or user.
+    localLoggingMode = cdp("DebugLogging")
+    If Err <> 0 Then Call InitializeSettingDebugLogging
+    Err = 0
+    
+    localLoggingFilePath = cdp("DebugExternalFilePath")
+    If Err <> 0 Then Call InitializeSettingDebugExternalFilePath
+    
     On Error GoTo 0
     
     TicToc = Timer
     
 End Sub
 
-Private Function DefaultLoggingFilePathAddress() As String
+Private Sub InitializeSettingDebugLogging()
+    'Establishes the CDP "DebugLogging" with default values
+    
+    On Error Resume Next
+    cdp("DebugLogging").Delete
+    cdp.Add Name:="DebugLogging", LinkToContent:=False, Type:=msoPropertyTypeNumber, Value:=fredDebugLogMode.ToImmediateOnly
+    On Error GoTo 0
+    
+End Sub
 
-    DefaultLoggingFilePathAddress = ThisWorkbook.Path & "\" & fso.GetBaseName(Replace(ThisWorkbook.Name, " ", "")) & "_DebugLog.txt"    '\WorkbookDirectory\WorkbookName_DebugLog.txt
+Private Sub InitializeSettingDebugExternalFilePath()
+    'Establishes the CDP "DebugExternalFilePath" with default values
+    
+    On Error Resume Next
+    cdp("DebugExternalFilePath").Delete
+    cdp.Add Name:="DebugExternalFilePath", LinkToContent:=False, Type:=msoPropertyTypeString, Value:=DefaultLoggingFilePathAddress
+    On Error GoTo 0
+    
+End Sub
+
+Private Function DefaultLoggingFilePathAddress() As String
+    'Path address of form: "\WorkbookDirectory\WorkbookName_DebugLog.txt"
+    
+    DefaultLoggingFilePathAddress = ThisWorkbook.Path & "\" & fso.GetBaseName(Replace(ThisWorkbook.Name, " ", "")) & "_DebugLog.txt"
 
 End Function
 
-Public Sub RestoreDefaultSetting(SettingName As fredEventSettings)
+Public Sub RestoreDefaultSetting(EventSetting As fredEventSettings)
     'Force deletes the setting then reinitializes the class to establish the default. Leave SettingName blank to restore all settings to default.
     
-    Dim dev_ClientSettings As Object
-    
-    On Error Resume Next
-    Set dev_ClientSettings = CreateObject("fredDeveloper_ClientSettings")
-    If Err = 0 Then 'End user has this class available, go ahead and use it.
-        If SettingName = DebugLogging Then dev_ClientSettings.Delete ("DebugLogging")
-        If SettingName = DebugExternalFilePath Then dev_ClientSettings.Delete ("DebugExternalFilePath")
-    End If
-    On Error GoTo 0
+    If EventSetting = DebugLogging Then Call InitializeSettingDebugLogging
+    If EventSetting = DebugExternalFilePath Then Call InitializeSettingDebugExternalFilePath
     
     Call Class_Initialize
     
@@ -173,33 +181,15 @@ Private Function DateTime() As String
 End Function
 
 Public Property Let LoggingMode(LogMode As fredDebugLogMode)
-    'This property makes use of the CDPs. However, if those were not setup, we want to gracefully fail so that the user can still use this class by
-    '   manually setting this variable each time it's called instead of having that setting persist.
+    'This property makes use of the CDPs.
     
-    Dim propertyTest As Integer
-    
-    On Error Resume Next
-    propertyTest = cdp("DebugLogging")
-    If Err = 0 Then cdp("DebugLogging") = LogMode   'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
-    On Error GoTo 0
-    
-    localLoggingMode = LogMode
+    cdp("DebugLogging") = LogMode
     
 End Property
 
 Public Property Get LoggingMode() As fredDebugLogMode
     
-    Dim propertyTest As Integer
-    
-    On Error Resume Next
-    propertyTest = cdp("DebugLogging")
-    If Err = 0 Then
-        LoggingMode = propertyTest          'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
-        localLoggingMode = propertyTest
-    Else
-        LoggingMode = localLoggingMode      'The CDP wasn't set up, just use the local variable.
-    End If
-    On Error GoTo 0
+    LoggingMode = cdp("DebugLogging")
 
 End Property
 
@@ -207,8 +197,7 @@ Public Property Let LoggingFilePath(FilePathAddress As String)
     'If the specified path exists, then update the cdp path address and set the object equal to the file. However, if the path does NOT exist, give the user
     '   a chance to create it. If they do, great! Proceed as planned. However, we don't want to create unexpected files on their computer. So, if the user
     '   decides to NOT create this file, not only will the cdp get left as is, the LoggingMode will get set to either Disabled or ToImmediateOnly.
-    'This property makes use of the CDPs. However, if those were not setup, we want to gracefully fail so that the user can still use this class by
-    '   manually setting this variable each time it's called instead of having that setting persist.
+    'This property makes use of the CDPs.
     
     Dim MsgResponse As Integer
     Dim propertyTest As String
@@ -228,28 +217,13 @@ Public Property Let LoggingFilePath(FilePathAddress As String)
     End If
     
     'Set the end use variables as required
-    On Error Resume Next
-    propertyTest = cdp("DebugExternalFilePath")
-    If Err = 0 Then cdp("DebugExternalFilePath") = FilePathAddress  'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
-    On Error GoTo 0
-    
-    localLoggingFilePath = FilePathAddress
+    cdp("DebugExternalFilePath") = FilePathAddress
     
 End Property
 
 Public Property Get LoggingFilePath() As String
     
-    Dim propertyTest As String
-    
-    On Error Resume Next
-    propertyTest = cdp("DebugExternalFilePath")
-    If Err = 0 Then
-        LoggingFilePath = propertyTest          'The fredDeveloper_ClientSettings class must not be available, or else the Initialize event would have created this.
-        localLoggingFilePath = propertyTest
-    Else
-        LoggingFilePath = localLoggingFilePath      'The CDP wasn't set up, just use the local variable.
-    End If
-    On Error GoTo 0
+    LoggingFilePath = cdp("DebugExternalFilePath")
 
 End Property
 
