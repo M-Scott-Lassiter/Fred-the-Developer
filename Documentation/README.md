@@ -8,6 +8,48 @@ Fred has several different types of documentaiton.
 - (IN PROGRESS) For example usage, see Tutorials.
 - The rest of this document details the custom Excel Workbook properties that Fred uses to make his developer tools work.
 
+## Class Structure
+
+This is a high level overview of Fred's class and method structure. For more detailed information, see the [Reference Guide](ReferenceGuide.md).
+
+
+- fredDeveloper_Assert
+  - AreEqual
+  - AreNotEqual
+  - IsTrue
+  - IsFalse
+  - IsGreater
+  - IsGreaterOrEqual
+  - IsLess
+  - IsLessOrEqual
+  - Inconclusive
+  - CountSuccess
+  - CountFailure
+  - CountInconclusive
+  - Report
+- fredDeveloper
+  - RestoreDefaultSetting
+  - Log
+  - LoggingMode
+  - LoggingFilePath
+  - Tic
+  - Toc
+- fredDeveloper_ClientSettings
+  - Add
+  - Clear
+  - ClientSettingExists
+  - Delete
+- fredDeveloper_ModuleManager
+  - CountAll
+  - CountClasses
+  - CountForms
+  - CountModules
+  - Directory
+  - Export
+  - Import
+
+
+
 ## Properties
 These are stored under Excel's built in `ThisWorkbook.CustomDocumentProperties`. By storing values here, the set values persist not only between VBA run calls, but remain even if you close and reopen your workbook (assuming you saved, of course). Fred uses these behind the scenes when doing tasks such as logging debugging output.
 
@@ -30,43 +72,4 @@ This enum is contained within the `fredDeveloper` class.
 | `ToImmediateOnly`	  	|1| Debug lines will print to the Immediate Window only |
 | `ToExternalOnly`	  	|2| Debug lines will print to an external file specified by [`DebugExternalFilePath`](#properties)|
 | `ToImmediateAndExternal`	|3| Debug lines will print to both the Immediate Window *and* the external file |
-
-## Class Structure
-
-This is a high level overview of Fred's class and method structure. For more detailed information, see the [Reference Guide](ReferenceGuide.md).
-
-- fredDeveloper
-  - fredDeveloper_Assert
-    - AreEqual
-    - AreNotEqual
-    - IsTrue
-    - IsFalse
-    - IsGreater
-    - IsGreaterOrEqual
-    - IsLess
-    - IsLessOrEqual
-    - Inconclusive
-    - CountSuccess
-    - CountFailure
-    - CountInconclusive
-    - Report
-  - fredDeveloper_ClientSettings
-    - Add
-    - Clear
-    - ClientSettingExists
-    - Delete
-  - fredDeveloper_ModuleManager
-    - CountAll
-    - CountClasses
-    - CountForms
-    - CountModules
-    - Directory
-    - Export
-    - Import
-  - RestoreDefaultSetting
-  - Log
-  - LoggingMode
-  - LoggingFilePath
-  - Tic
-  - Toc
 

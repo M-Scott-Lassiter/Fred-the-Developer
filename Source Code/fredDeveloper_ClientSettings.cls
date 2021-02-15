@@ -67,13 +67,24 @@ Public Sub Clear()
     'Deletes ALL client settings in ThisWorkbook.CustomDocumentProperties without further warning.
     
     Dim prop As Object
-    Dim i As Integer
     
     For Each prop In cdp
         prop.Delete
     Next prop
     
 End Sub
+
+Public Property Get Count() As Integer
+    'Deletes ALL client settings in ThisWorkbook.CustomDocumentProperties without further warning.
+    
+    Dim prop As Object
+    
+    Count = 0
+    For Each prop In cdp
+        Count = Count + 1
+    Next prop
+    
+End Property
 
 Public Property Get ClientSettingExists(ClientSetting As String) As Boolean
     'Attempts to set a variant equal to the setting. If it works, the setting obviously exists. If there's an error, then it doesn't.
@@ -86,3 +97,18 @@ Public Property Get ClientSettingExists(ClientSetting As String) As Boolean
     On Error GoTo 0
     
 End Property
+
+Public Sub ReportSettings()
+
+    Dim prop As Object
+    Dim i As Integer
+    
+    Debug.Print "CustomDocumentProperties List (Index|Name|Value)"
+    i = 0
+    For Each prop In cdp
+        i = i + 1
+        Debug.Print i & "|" & prop.Name & "|" & prop.Value
+    Next prop
+    
+    
+End Sub

@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "fredDeveloper"
+Attribute VB_Name = "fredDeveloper_Events"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -43,48 +43,74 @@ Public Enum fredDebugLogMode
     [_Last]
 End Enum
 
+Public Enum fredEventSettings
+    [_First]
+    DebugLogging = 0
+    DebugExternalFilePath
+    [_Last]
+End Enum
+
 Private cdp As Object   'Custom Document Properties, declared in Initialization
 Private fso As Object   'FileScriptingObject
 
-'Private DevMode As Boolean
-Private dev_ModuleManager As New fredDeveloper_ModuleManager
-Private dev_ClientSettings As New fredDeveloper_ClientSettings
 Private TicToc As Single
 
 Private Sub Class_Initialize()
+    
+    Dim localLoggingMode As Integer
+    Dim localLoggingFilePath As String
+    
     Set cdp = ThisWorkbook.CustomDocumentProperties
     Set fso = CreateObject("Scripting.FileSystemObject")
     
-    'Makes sure the values are available for use, but does nothing to verify they are
-    '   the correct type and the names were not coopted by some other program or user.
-    dev_ClientSettings.Add "DebugLogging", msoPropertyTypeNumber, fredDebugLogMode.Disabled
-    dev_ClientSettings.Add "DebugExternalFilePath", msoPropertyTypeString, ThisWorkbook.Path & "\" & fso.GetBaseName(Replace(ThisWorkbook.Name, " ", "")) & "_DebugLog.txt"     '\WorkbookDirectory\WorkbookName_DebugLog.txt
-
+    On Error Resume Next    'If the saved values aren't already available, create them.
+                            'Makes sure the values are available for use, but does nothing to verify they are
+                            'the correct type and the names were not coopted by some other program or user.
+    localLoggingMode = cdp("DebugLogging")
+    If Err <> 0 Then Call InitializeSettingDebugLogging
+    Err = 0
+    
+    localLoggingFilePath = cdp("DebugExternalFilePath")
+    If Err <> 0 Then Call InitializeSettingDebugExternalFilePath
+    
+    On Error GoTo 0
+    
     TicToc = Timer
     
 End Sub
 
-Public Property Get ModuleManager() As fredDeveloper_ModuleManager
+Private Sub InitializeSettingDebugLogging()
+    'Establishes the CDP "DebugLogging" with default values
     
-    Set ModuleManager = dev_ModuleManager
-
-End Property
-
-Public Property Get ClientSettings() As fredDeveloper_ClientSettings
+    On Error Resume Next
+    cdp("DebugLogging").Delete
+    cdp.Add Name:="DebugLogging", LinkToContent:=False, Type:=msoPropertyTypeNumber, Value:=fredDebugLogMode.ToImmediateOnly
+    On Error GoTo 0
     
-    Set ClientSettings = dev_ClientSettings
+End Sub
 
-End Property
+Private Sub InitializeSettingDebugExternalFilePath()
+    'Establishes the CDP "DebugExternalFilePath" with default values
+    
+    On Error Resume Next
+    cdp("DebugExternalFilePath").Delete
+    cdp.Add Name:="DebugExternalFilePath", LinkToContent:=False, Type:=msoPropertyTypeString, Value:=DefaultLoggingFilePathAddress
+    On Error GoTo 0
+    
+End Sub
 
-Public Sub RestoreDefaultSetting(Optional SettingName As String)
+Private Function DefaultLoggingFilePathAddress() As String
+    'Path address of form: "\WorkbookDirectory\WorkbookName_DebugLog.txt"
+    
+    DefaultLoggingFilePathAddress = ThisWorkbook.Path & "\" & fso.GetBaseName(Replace(ThisWorkbook.Name, " ", "")) & "_DebugLog.txt"
+
+End Function
+
+Public Sub RestoreDefaultSetting(EventSetting As fredEventSettings)
     'Force deletes the setting then reinitializes the class to establish the default. Leave SettingName blank to restore all settings to default.
     
-    If SettingName = "" Then
-        dev_ClientSettings.Delete ("DebugLogging")
-        dev_ClientSettings.Delete ("DebugExternalFilePath")
-    Else
-        dev_ClientSettings.Delete (SettingName)
-    End If
+    If EventSetting = DebugLogging Then Call InitializeSettingDebugLogging
+    If EventSetting = DebugExternalFilePath Then Call InitializeSettingDebugExternalFilePath
     
     Call Class_Initialize
     
@@ -93,7 +119,7 @@ End Sub
 Public Sub Log(LogEntry As String)
     'Outputs the provided LogEntry to either the Immediate window, an external file, or both as specified by LoggingMode.
     
-    Select Case cdp("DebugLogging")
+    Select Case LoggingMode
         Case Is = Disabled
             Exit Sub
         Case Is = ToImmediateOnly
@@ -139,7 +165,7 @@ Private Sub LogToExternalTextFile(LogEntry As String)
     
     Dim LogFile As Object
     
-    Open cdp("DebugExternalFilePath") For Append As #1
+    Open LoggingFilePath For Append As #1
     
     Print #1, DateTime & "|" & Application.UserName & "|" & LogEntry
     
@@ -154,10 +180,11 @@ Private Function DateTime() As String
     
 End Function
 
-Public Property Let LoggingMode(DebugMode As fredDebugLogMode)
+Public Property Let LoggingMode(LogMode As fredDebugLogMode)
+    'This property makes use of the CDPs.
     
-    cdp("DebugLogging") = DebugMode
-
+    cdp("DebugLogging") = LogMode
+    
 End Property
 
 Public Property Get LoggingMode() As fredDebugLogMode
@@ -170,11 +197,14 @@ Public Property Let LoggingFilePath(FilePathAddress As String)
     'If the specified path exists, then update the cdp path address and set the object equal to the file. However, if the path does NOT exist, give the user
     '   a chance to create it. If they do, great! Proceed as planned. However, we don't want to create unexpected files on their computer. So, if the user
     '   decides to NOT create this file, not only will the cdp get left as is, the LoggingMode will get set to either Disabled or ToImmediateOnly.
+    'This property makes use of the CDPs.
     
     Dim MsgResponse As Integer
+    Dim propertyTest As String
     
     FilePathAddress = CleanFilePath(FilePathAddress)
     
+    'Test if this file even exists or not
     If Not (fso.FileExists(FilePathAddress)) Then
         MsgResponse = MsgBox("This file does not exist. Would you like to create it?", vbYesNo, "File Not Found")
         If MsgResponse = vbYes Then
@@ -186,8 +216,9 @@ Public Property Let LoggingFilePath(FilePathAddress As String)
         End If
     End If
     
+    'Set the end use variables as required
     cdp("DebugExternalFilePath") = FilePathAddress
-
+    
 End Property
 
 Public Property Get LoggingFilePath() As String
