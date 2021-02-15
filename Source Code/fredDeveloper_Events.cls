@@ -176,7 +176,7 @@ End Sub
 Private Function DateTime() As String
     'Provides a formatted date/time string for logging purposes, e.g. "1/31/2021 18:27:33"
     
-    DateTime = Date & " " & Format(Time, "hh:mm:ss")
+    DateTime = Format(Date, "mm/dd/yyyy") & " " & Format(Time, "hh:mm:ss")
     
 End Function
 
