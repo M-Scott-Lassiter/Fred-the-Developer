@@ -43,7 +43,7 @@ Public Enum fredDebugLogMode
     [_Last]
 End Enum
 
-Public Enum fredEventSettings
+Public Enum fredEventSettings   'Used by the RestoreDefaultSettings function to force only CDP resets of fredDeveloper_Events variables
     [_First]
     DebugLogging = 0
     DebugExternalFilePath
@@ -133,10 +133,98 @@ Public Sub Log(LogEntry As String)
     
 End Sub
 
+Private Sub LogToExternalTextFile(LogEntry As String)
+    
+    Dim LogFile As Object
+    
+    LoggingFilePath = LoggingFilePath
+    
+    Select Case LoggingFilePath
+        Case Is = ""
+            'It shouldn't come to this, but if for some reason the user manages to get here, an invalid LoggingFilePath should stop immediately
+            Exit Sub
+        Case Else
+            'The file path is valid, go ahead and append to it.
+            Open LoggingFilePath For Append As #1
+            Print #1, DateTime & "|" & Application.UserName & "|" & LogEntry
+            Close #1
+    End Select
+    
+End Sub
+
+Private Function DateTime() As String
+    'Provides a formatted date/time string for logging purposes, e.g. "1/31/2021 18:27:33"
+    
+    DateTime = Format(Date, "mm/dd/yyyy") & " " & Format(Time, "hh:mm:ss")
+    
+End Function
+
+Public Property Let LoggingMode(LogMode As fredDebugLogMode)
+    'This property makes use of the CDPs. If trying to log external, make sure there's actually somewhere to go to first. If not, try to make it. If the user
+    '   insists on not making the file, just set it back to a mode that doesn't write external.
+    
+    Select Case LogMode
+        Case ToImmediateAndExternal, ToExternalOnly
+            'If there is no valid path set, then try to set it back to the default path. This prompts the user to create a new log file.
+            If LoggingFilePath = "" Then LoggingFilePath = DefaultLoggingFilePathAddress
+            
+            'If the user STILL decides they don't want to make this file but are trying to set an external logging mode anyway, then strip off the external part.
+            If LoggingFilePath = "" Then
+                If LogMode = ToExternalOnly Then LogMode = Disabled
+                If LogMode = ToImmediateAndExternal Then LogMode = ToImmediateOnly
+            End If
+    End Select
+    
+    cdp("DebugLogging") = LogMode
+    
+End Property
+
+Public Property Get LoggingMode() As fredDebugLogMode
+    
+    LoggingMode = cdp("DebugLogging")
+
+End Property
+
+Public Property Let LoggingFilePath(FilePathAddress As String)
+    'If the specified path exists, then update the cdp path address and set the object equal to the file. However, if the path does NOT exist, give the user
+    '   a chance to create it. If they do, great! Proceed as planned. However, we don't want to create unexpected files on their computer. So, if the user
+    '   decides to NOT create this file, not only will the cdp get left as is, the LoggingMode will get set to either Disabled or ToImmediateOnly.
+    'This property makes use of the CDPs.
+    
+    Dim MsgResponse As Integer
+    Dim propertyTest As String
+    
+    'Test if this file even exists or not
+    If Not (fso.FileExists(FilePathAddress)) And FilePathAddress <> "" Then
+        MsgResponse = MsgBox("No log file exists at:" & vbCrLf & vbCrLf & FilePathAddress & vbCrLf & vbCrLf & _
+            "Press OK to create a new log file. Pressing Cancel will remove the external option from the LoggingMode until a valid log exists.", vbOKCancel, "File Not Found")
+        If MsgResponse = vbOK Then
+            Call CreateNewExternalDebugLogFile(FilePathAddress)
+        Else
+            FilePathAddress = ""   'Setting to an empty string clears out the previous data and ensures it isn't a valid file
+            Select Case LoggingMode 'Strip the external writing
+                Case Is = ToExternalOnly
+                    LoggingMode = Disabled
+                Case Is = ToImmediateAndExternal
+                    LoggingMode = ToImmediateOnly
+            End Select
+        End If
+    End If
+    
+    'Set the end use variables as required. FilePathAddress is either already in existence or it was set to an empty string.
+    cdp("DebugExternalFilePath") = FilePathAddress
+    
+End Property
+
+Public Property Get LoggingFilePath() As String
+    
+    LoggingFilePath = cdp("DebugExternalFilePath")
+    
+End Property
+
 Private Sub CreateNewExternalDebugLogFile(LogFilePath As String, Optional ForceOverwrite As Boolean)
     'Creates a new debug log file. If the file already existed, this script reinitializes it.
     
-    'Dim OverwriteBoolean As Boolean
     Dim MsgResponse As Integer
     Dim LogFile As Object
     
@@ -160,83 +248,6 @@ Private Sub CreateNewExternalDebugLogFile(LogFilePath As String, Optional ForceO
     End With
     
 End Sub
-
-Private Sub LogToExternalTextFile(LogEntry As String)
-    
-    Dim LogFile As Object
-    
-    Open LoggingFilePath For Append As #1
-    
-    Print #1, DateTime & "|" & Application.UserName & "|" & LogEntry
-    
-    Close #1
-
-End Sub
-
-Private Function DateTime() As String
-    'Provides a formatted date/time string for logging purposes, e.g. "1/31/2021 18:27:33"
-    
-    DateTime = Format(Date, "mm/dd/yyyy") & " " & Format(Time, "hh:mm:ss")
-    
-End Function
-
-Public Property Let LoggingMode(LogMode As fredDebugLogMode)
-    'This property makes use of the CDPs.
-    
-    cdp("DebugLogging") = LogMode
-    
-End Property
-
-Public Property Get LoggingMode() As fredDebugLogMode
-    
-    LoggingMode = cdp("DebugLogging")
-
-End Property
-
-Public Property Let LoggingFilePath(FilePathAddress As String)
-    'If the specified path exists, then update the cdp path address and set the object equal to the file. However, if the path does NOT exist, give the user
-    '   a chance to create it. If they do, great! Proceed as planned. However, we don't want to create unexpected files on their computer. So, if the user
-    '   decides to NOT create this file, not only will the cdp get left as is, the LoggingMode will get set to either Disabled or ToImmediateOnly.
-    'This property makes use of the CDPs.
-    
-    Dim MsgResponse As Integer
-    Dim propertyTest As String
-    
-    FilePathAddress = CleanFilePath(FilePathAddress)
-    
-    'Test if this file even exists or not
-    If Not (fso.FileExists(FilePathAddress)) Then
-        MsgResponse = MsgBox("This file does not exist. Would you like to create it?", vbYesNo, "File Not Found")
-        If MsgResponse = vbYes Then
-            Call CreateNewExternalDebugLogFile(FilePathAddress)
-        Else
-            If LoggingMode = ToImmediateAndExternal Then LoggingMode = ToImmediateOnly
-            If LoggingMode = ToExternalOnly Then LoggingMode = Disabled
-            Exit Property
-        End If
-    End If
-    
-    'Set the end use variables as required
-    cdp("DebugExternalFilePath") = FilePathAddress
-    
-End Property
-
-Public Property Get LoggingFilePath() As String
-    
-    LoggingFilePath = cdp("DebugExternalFilePath")
-
-End Property
-
-Private Function CleanFilePath(PathAddress As String) As String
-    
-    'PLACEHOLDER FOR VALIDATING FILEPATH EXISTS
-    
-'    Do While Right(PathAddress, 1) = "\"
-'        PathAddress = Left(PathAddress, Len(PathAddress) - 1)
-'    Loop
-    CleanFilePath = PathAddress
-    
-End Function
 
 Public Sub Tic()
     'Sets the current time to TicToc. Used in conjunction with a subsequent Toc call.
