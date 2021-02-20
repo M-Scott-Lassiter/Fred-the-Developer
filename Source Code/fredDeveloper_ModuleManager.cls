@@ -48,7 +48,7 @@ Private Sub Class_Initialize()
     If Err <> 0 Then Set VBProject = Nothing
     On Error GoTo 0
     
-    ExternalCodeDirectory = ThisWorkbook.Path   'Default until told otherwise
+    ExternalCodeDirectory = ""   'Default until told otherwise
     
 End Sub
 
@@ -62,9 +62,15 @@ Public Sub Export(Optional ModuleList As String)
     Dim ModuleArray() As String
     Dim ExportFlag As Boolean
     Dim FileExtension As String
+    Dim MsgResponse As Integer
     Dim i As Integer, j As Integer
     
-    If VBProject Is Nothing Then Exit Sub
+    If VBProject Is Nothing Then Exit Sub   'Code will otherwise fail because appropriate permissions not granted by Excel
+    
+    If Not fso.FolderExists(ExternalCodeDirectory) Then
+        MsgResponse = MsgBox("No valid export filepath set.", vbCritical, "Export Folder Doesn't Exist")
+        Exit Sub
+    End If
     
     'If the optional ModuleList parameter was used, format the input string into a well trimmed array
     If ModuleList <> "" Then
@@ -136,9 +142,7 @@ Public Sub Import(Optional ModuleList As String)
     Dim FileExtension As String
     Dim i As Integer, j As Integer
     
-    If VBProject Is Nothing Then Exit Sub
-    
-    'Set fsofile = fso.File
+    If VBProject Is Nothing Then Exit Sub   'Code will otherwise fail because appropriate permissions not granted by Excel
     
     'If the optional ModuleList parameter was used, format the input string into a well trimmed array
     If ModuleList <> "" Then
@@ -178,7 +182,7 @@ Public Sub Import(Optional ModuleList As String)
 End Sub
     
 Public Property Let Directory(FilePath As String)
-    'This property ensures that there is always a valid file path directory to use when exporting/importing code modules.
+    'This property ensures that there is always a valid file path directory to use when exporting/importing code modules, or else it is an empty string.
     
     Dim MsgResponse As Integer
     
@@ -188,12 +192,11 @@ Public Property Let Directory(FilePath As String)
     Loop
     
     If Not fso.FolderExists(FilePath) Then
-        MsgResponse = MsgBox("This file path does not yet exist. Press 'Ok' to create the folder" & vbCrLf & vbCrLf & FilePath & vbCrLf & vbCrLf & _
-                             "Press 'Cancel' to use the Workbook directory.", vbOKCancel, "Folder Doesn't Exist")
+        MsgResponse = MsgBox("This file path does not yet exist. Press 'Ok' to create the folder" & vbCrLf & vbCrLf & FilePath, vbOKCancel, "Folder Doesn't Exist")
         If MsgResponse = vbOK Then
             fso.CreateFolder (FilePath)
         Else
-            FilePath = ThisWorkbook.Path
+            FilePath = ""
         End If
         
     End If
