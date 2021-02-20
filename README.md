@@ -93,7 +93,7 @@ This has been a solo project so far, but I welcome any contributions or feedback
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](/../../LICENSE) for more information.
+Distributed under the MIT License. See [LICENSE](/../../blob/main/LICENSE) for more information.
 
 
 ## Contact
