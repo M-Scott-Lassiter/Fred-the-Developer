@@ -54,7 +54,6 @@ End Sub
 
 
 Public Sub AreEqual(Value1 As Variant, Value2 As Variant, TestName As String)
-    'Does comparisons based on VBA's implicit type conversions. For example, AreEqual("1",1) would be successful.
     
     On Error GoTo TestInconclusivePoint
     
@@ -76,7 +75,6 @@ TestInconclusivePoint:
 End Sub
 
 Public Sub AreNotEqual(Value1 As Variant, Value2 As Variant, TestName As String)
-    'Does comparisons based on VBA's implicit type conversions. For example, AreNotEqual("1",2) would be successful.
     
     On Error GoTo TestInconclusivePoint
     
