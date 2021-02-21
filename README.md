@@ -1,17 +1,18 @@
 # Fred the Developer
 
-Enhance your projects with a standalone VBA development framework that provides debugging, source control, and Test Driven Development tools with 100% VBA.
+Fred enhances your projects with a standalone VBA development framework that provides logging, debugging, source control, and Test Driven Development tools written in 100% VBA.
+
 
 ## About the Project
 
 I built this project to help VBA developers
 
 1) Output debugging or status lines to an external log file with a single line of code
-2) Write unit tests using various `Assert` methods
-3) Export and Import code modules, forms, or classes from within another VBA script
-4) Add or remove Custom Document Properties to enable persistent variables between VBA executions or Workbook Close/Open events without writing to spreadsheets
+2) Add or remove Custom Document Properties to enable persistent variables between VBA run time executions or Workbook Close/Open events without writing to spreadsheets
+3) Write unit tests using various `Assert` methods
+4) Export and Import code modules, forms, or classes from within another VBA script
 
-My entire professional career has revolved around scant computer resources. The one ubiquitous constant? The Microsoft Office suite. While a fully featured tool such as [RubberDuck VBA](https://rubberduckvba.com/) provides robust capabilities, it is a C# add-in that you likely can't install without your system administrator's permission. 
+Why 100% in VBA? Because my entire professional career has revolved around scant computer resources. The one ubiquitous constant was the Microsoft Office suite. If you are using a computer with Windows, chances are you have Office. While fully featured tools such as [RubberDuck VBA](https://rubberduckvba.com/) provides robust capabilities, we don't all have the luxury to install add-ins without system administrators permission.
 
 Because I built Fred from 100% VBA class modules, you can simply add these modules to any macro enabled workbook, document, presentation, or more to flesh out your own robustly developed stand alone product.
 
@@ -32,9 +33,9 @@ You don't need to make any additional references. Fred makes references to the "
 
 ## Getting Started
 
-Fred is completely contained within four VBA class modules. If you want to use Fred, then I assume you are familiar enough with VBA to access the Microsoft VBA IDE.
+Fred is contained to four independent VBA class modules. That means if you only want the logging functionality, you don't have to bother with any of the other ones and bloat your project. Take only what you need.
 
-To use it in your project, save the modules from the [Source Code](/source code) to your machine, then use one of the following methods:
+To use it in your project, save the modules from the [Source Code](/source code) to your machine, then use one of the following methods to add them in the IDE.
 
 - Select all of the class modules in the file explorer, then drag and drop into the Project window on the IDE
 - Save the Fred Demonstration Workbook (note: workbook and link not yet available), then open both it and your project. In the IDE, drag each class file into your project
@@ -45,6 +46,7 @@ To use it in your project, save the modules from the [Source Code](/source code)
 # Example Use
 
 The following example cases reside in normal code modules and demonstrates how you might use Fred as a developer. Learn how to use all of the functions in the [Reference Guide](/Documentation/ReferenceGuide.md)!
+
 
 ## Assert
 
@@ -76,7 +78,7 @@ Sub FredDemonstrationUnitTesting()
 End Sub
 ```
 
-Running this script will give the following output in the Immediate window:
+Running this script gives the following output in the Immediate window:
 
 > Test battery complete. 2 issues detected.
 >
@@ -88,6 +90,7 @@ Running this script will give the following output in the Immediate window:
 
 If we now know which tests are causing the problems so we can go track them down and work through bug patching.
 
+
 ## ClientSettings
 
 The `fredDeveloper_ClientSettings` class provides an easy interface to the Workbook's `CustomDocumentProperties`. Variables saved there persist between VBA runtimes and save/close events on the workbook. Instead of saving data to a cell in a hidden worksheet, you can use these properties to make it easier to maintain your code as well as obfuscate it from end users more effectively.
@@ -97,6 +100,9 @@ Sub FredDemonstrationClientSettings()
     'Show how to clear and add client settings, then run a report to easily show you what settings are available
     
     Dim ClientSettings As New fredDeveloper_ClientSettings
+    Dim cdp As Object
+    
+    Set cdp = ThisWorkbook.CustomDocumentProperties
     
     ClientSettings.Clear
     Debug.Print "Settings: " & ClientSettings.Count
@@ -107,7 +113,7 @@ Sub FredDemonstrationClientSettings()
     ClientSettings.Add "MyStringSetting", msoPropertyTypeString, "Test string"
     ClientSettings.Add "MyFloatSetting", msoPropertyTypeFloat, 3.14159
     
-    Debug.Print "MyBooleanSetting Exists: " & ClientSettings.Exists("MyBooleanSetting")
+    Debug.Print "MyFloatSetting Exists: " & ClientSettings.Exists("MyFloatSetting") & ", and its value is " & cdp("MyFloatSetting")
     Debug.Print "Settings: " & ClientSettings.Count
     
     ClientSettings.Report
@@ -119,7 +125,7 @@ If we check the Immediate window, we find:
 
 > Settings: 0
 >
-> MyBooleanSetting Exists: True
+> MyFloatSetting Exists: True, and its value is 3.14159
 >
 > Settings: 5
 >
@@ -138,7 +144,7 @@ If we check the Immediate window, we find:
 
 ## Events
 
-The `fredDeveloper_Events` class gives you logging functionality. Outputting to the Immediate Window is easy, but it slows down your code execution, and the end user certainly won't ever see it. Using the `Log` function takes care of that. You can write in log events for debugging into your code at key points. Set `LoggingMode = Disabled` for your production run. If you're having bugs, you can go back and redirect that output to the Immediate window, an external file, or both.
+The `fredDeveloper_Events` class gives you logging functionality. Outputting to the Immediate Window is easy, but it slows down your code execution, and the end user certainly won't ever see it. Using the `Log` function takes care of that. You can write in log events for debugging into your code at key points. Set `LoggingMode = Disabled` for your production run. If you're having bugs, you can go back and redirect that output to the Immediate window, an external file, or both to help you follow what's going on.
 
 Alternatively, you can leave the external writing on and use strategically placed `Log` commands in your scripts to keep a record of updates. In the example below, we also make use of the `Tic` and `Toc` functions to track how long it took to do an obscenely large number of calculations.
 
@@ -178,6 +184,7 @@ And in the external log file:
 > 02/21/2021 07:57:17|MSL|10,000,000 Iteration Loop complete. Run time: 0.119140625 seconds.
 
 Every subsequent run will leave another log entry you can review later.
+
 
 ## ModuleManager
 
@@ -230,4 +237,4 @@ Distributed under the MIT License. See [LICENSE](/../../blob/main/LICENSE) for m
 
 ## Contact
 
-Reach me on [LinkedIn](https://www.linkedin.com/in/mscottlassiter/) or Twitter [@mscottlassiter](https://twitter.com/MScottLassiter).
+Reach me on [LinkedIn](https://www.linkedin.com/in/mscottlassiter/) or [Twitter](https://twitter.com/MScottLassiter).
