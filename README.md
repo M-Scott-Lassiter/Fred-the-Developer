@@ -115,13 +115,21 @@ End Sub
 If we check the Immediate window, we find:
 
 > Settings: 0
+
 > MyBooleanSetting Exists: True
+
 > Settings: 5
+
 > CustomDocumentProperties List (Index|Name|Value)
+
 > 1|MyBooleanSetting|True
+
 > 2|MyDateSetting|2/21/2021 7:42:42 AM
+
 > 3|MyNumberSetting|1245
+
 > 4|MyStringSetting|Test string
+
 > 5|MyFloatSetting|3.14159
 
 
