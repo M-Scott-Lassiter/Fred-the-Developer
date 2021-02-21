@@ -27,6 +27,3 @@ Microsoft Office Version:
 Program: <Excel/PowerPoint/Access/Word/etc.>
 Operating System: <Windows 10, Windows 8.1, iOS, etc.>
 Other Relevant Information:
-
-## Possible Solution
-<Optional, but encouraged if you have an idea!>
