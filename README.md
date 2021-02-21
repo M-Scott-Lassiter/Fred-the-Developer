@@ -79,8 +79,11 @@ End Sub
 Running this script will give the following output in the Immediate window:
 
 > Test battery complete. 2 issues detected.
+>
 > Successful: 9
+>
 > Failed: 1 (String1EqualsNum1)
+>
 > Inconclusive: 1 (ThisTestIsInconclusive)
 
 If we now know which tests are causing the problems so we can go track them down and work through bug patching.
@@ -115,21 +118,21 @@ End Sub
 If we check the Immediate window, we find:
 
 > Settings: 0
-
+>
 > MyBooleanSetting Exists: True
-
+>
 > Settings: 5
-
+>
 > CustomDocumentProperties List (Index|Name|Value)
-
+>
 > 1|MyBooleanSetting|True
-
+>
 > 2|MyDateSetting|2/21/2021 7:42:42 AM
-
+>
 > 3|MyNumberSetting|1245
-
+>
 > 4|MyStringSetting|Test string
-
+>
 > 5|MyFloatSetting|3.14159
 
 
@@ -166,9 +169,12 @@ Running this will produce this in the Immediate window:
 And in the external log file:
 
 > Debug Log file for Fred-the-Developer 0.1.0.xlsm
+>
 > Logging powered by Fred the Developer (https://github.com/M-Scott-Lassiter/Fred-the-Developer) under the MIT license, Copyright (c) 2021.
+>
 > Log created within Microsoft Excel by MSL on 02/21/2021 07:56:34.
-
+>
+>
 > 02/21/2021 07:57:17|MSL|10,000,000 Iteration Loop complete. Run time: 0.119140625 seconds.
 
 Every subsequent run will leave another log entry you can review later.
