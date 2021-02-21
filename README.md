@@ -45,7 +45,7 @@ To use it in your project, save the modules from the [Source Code](/source code)
 
 # Example Use
 
-The following example cases reside in normal code modules and demonstrates how you might use Fred as a developer. Learn how to use all of the functions in the [Reference Guide](/Documentation/ReferenceGuide.md)!
+The following example cases reside in normal code modules and demonstrates how you might use Fred as a developer. Learn how to use all of the functions in the [documentation](/Documentation)!
 
 
 ## Assert
