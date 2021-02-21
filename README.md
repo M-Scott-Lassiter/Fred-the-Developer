@@ -22,7 +22,7 @@ Fredrick... not everything has to be an acronym.
 
 ## Requirements
 
-- Microsoft Office 2007 or newer
+- Microsoft Office 2007 or newer (Not tested for earlier versions)
 - A macro enabled file
 
 You don't need to make any additional references. Fred makes references to the "Microsoft Scripting Runtime" and "Microsoft Visual Basic For Applications Extensibility 5.3" libraries. However, both are late bound to prevent end users from having to enable the references on each machine they use.
@@ -34,61 +34,179 @@ You don't need to make any additional references. Fred makes references to the "
 
 Fred is completely contained within four VBA class modules. If you want to use Fred, then I assume you are familiar enough with VBA to access the Microsoft VBA IDE.
 
-To use it in your project, either
+To use it in your project, save the modules from the [Source Code](/source code) to your machine, then use one of the following methods:
 
-- Save the modules from the [Source Code](/source code) then manually import each one into your project
-- Open the Fred Demonstration Workbook (note: workbook and link not yet available) and drag each one into your project
+- Select all of the class modules in the file explorer, then drag and drop into the Project window on the IDE
+- Save the Fred Demonstration Workbook (note: workbook and link not yet available), then open both it and your project. In the IDE, drag each class file into your project
+- From the IDE, use File -> Import File to manually import each one into your project
 - From your project, create a blank class module and then copy/paste the code from this website like a monster
 
 
-## Example Use
+# Example Use
 
-This sub resides in a normal code module and demonstrates how you might use Fred as a developer. 
+The following example cases reside in normal code modules and demonstrates how you might use Fred as a developer. Learn how to use all of the functions in the [Reference Guide](/Documentation/ReferenceGuide.md)!
 
-It exports three code modules to the "Source Code" folder in the workbook's path then logs the results to "FredTheDeveloper_DebugLog.txt" as well as the Immediate window in the VBA IDE. The `dev.Tic` and `dev.Toc` functions work together to measure how long it took to run that code segment.
+## Assert
+
+The `fredDeveloper_Assert` class provides a framework for enabling unit testing. For example:
 
 ```VBA
-Sub ExportCodeModulesWithFred()
-
-    Dim dev As New fredDeveloper
+Sub FredDemonstrationUnitTesting()
+    'Show an example use case for Test Driven Development
     
-    dev.Tic
-    dev.LoggingFilePath = ThisWorkbook.Path & "\FredTheDeveloper_DebugLog.txt"
-    dev.LoggingMode = ToImmediateAndExternal
+    Dim Assert As New fredDeveloper_Assert
     
-    With dev.ModuleManager
-        .Directory = ThisWorkbook.Path & "\Source Code"
-        .Export "fredDeveloper"
-        .Export "fredDeveloper_ClientSettings"
-        .Export "fredDeveloper_ModuleManager"
-    End With
+    Assert.AreEqual 1, 1, "Num1IsEqualToNum1"
+    Assert.AreEqual 1, "1", "String1EqualsNum1"         'Should fail, does not implicitly type convert
+    Assert.AreNotEqual 1, 2, "Num1NotEqualToNum2"
+    Assert.AreNotEqual 1, "1", "Num1NotEqualToString1"  'Should pass
     
-    dev.Log ("All code modules exported. Run time: " & dev.Toc & " seconds.")
+    Assert.IsFalse 1 = 2, "FalseComparisonTest"
+    Assert.IsTrue 1 = 1, "TrueComparisonTest"
+    
+    Assert.IsGreater 5, 1, "Num5IsGreaterThanNum1"
+    Assert.IsGreaterOrEqual 6, 6, "Num6IsGreaterThanOrEqualToNum6"
+    Assert.IsLess 4, 9, "Num5IsLessThanNum1"
+    Assert.IsLessOrEqual 8, 8, "Num8IsLessThanOrEqualToNum8"
+    
+    Assert.IsInconclusive "ThisTestIsInconclusive"      'Flagged as inconlcusive to remind us to come back later
+    
+    Debug.Print Assert.Report
     
 End Sub
 ```
 
-Learn how to use all of the functions in the [Reference Guide](/Documentation/ReferenceGuide.md)!
+Running this script will give the following output in the Immediate window:
+
+> Test battery complete. 2 issues detected.
+> Successful: 9
+> Failed: 1 (String1EqualsNum1)
+> Inconclusive: 1 (ThisTestIsInconclusive)
+
+If we now know which tests are causing the problems so we can go track them down and work through bug patching.
+
+## ClientSettings
+
+The `fredDeveloper_ClientSettings` class provides an easy interface to the Workbook's `CustomDocumentProperties`. Variables saved there persist between VBA runtimes and save/close events on the workbook. Instead of saving data to a cell in a hidden worksheet, you can use these properties to make it easier to maintain your code as well as obfuscate it from end users more effectively.
+
+```VBA
+Sub FredDemonstrationClientSettings()
+    'Show how to clear and add client settings, then run a report to easily show you what settings are available
+    
+    Dim ClientSettings As New fredDeveloper_ClientSettings
+    
+    ClientSettings.Clear
+    Debug.Print "Settings: " & ClientSettings.Count
+    
+    ClientSettings.Add "MyBooleanSetting", msoPropertyTypeBoolean, True
+    ClientSettings.Add "MyDateSetting", msoPropertyTypeDate, Now
+    ClientSettings.Add "MyNumberSetting", msoPropertyTypeNumber, 1245
+    ClientSettings.Add "MyStringSetting", msoPropertyTypeString, "Test string"
+    ClientSettings.Add "MyFloatSetting", msoPropertyTypeFloat, 3.14159
+    
+    Debug.Print "MyBooleanSetting Exists: " & ClientSettings.Exists("MyBooleanSetting")
+    Debug.Print "Settings: " & ClientSettings.Count
+    
+    ClientSettings.Report
+
+End Sub
+```
+
+If we check the Immediate window, we find:
+
+> Settings: 0
+> MyBooleanSetting Exists: True
+> Settings: 5
+> CustomDocumentProperties List (Index|Name|Value)
+> 1|MyBooleanSetting|True
+> 2|MyDateSetting|2/21/2021 7:42:42 AM
+> 3|MyNumberSetting|1245
+> 4|MyStringSetting|Test string
+> 5|MyFloatSetting|3.14159
 
 
-## Project Roadmap
+## Events
 
-This project is in Beta phase. 
+The `fredDeveloper_Events` class gives you logging functionality. Outputting to the Immediate Window is easy, but it slows down your code execution, and the end user certainly won't ever see it. Using the `Log` function takes care of that. You can write in log events for debugging into your code at key points. Set `LoggingMode = Disabled` for your production run. If you're having bugs, you can go back and redirect that output to the Immediate window, an external file, or both.
+
+Alternatively, you can leave the external writing on and use strategically placed `Log` commands in your scripts to keep a record of updates. In the example below, we also make use of the `Tic` and `Toc` functions to track how long it took to do an obscenely large number of calculations.
+
+```VBA
+Sub FredDemonstrationEvents()
+    'Show how to log a debugging message with the time it took to perform 10,000,000 additions.
+    
+    Dim Events As New fredDeveloper_Events
+    Dim i As Long
+       
+    Events.LoggingFilePath = ThisWorkbook.Path & "\Example Debug Log.txt"
+    Events.LoggingMode = ToImmediateAndExternal
+    
+    Events.Tic
+    Do While i < 10000000
+        i = i + 1
+    Loop
+    
+    Events.Log ("10,000,000 Iteration Loop complete. Run time: " & Events.Toc & " seconds.")
+    
+End Sub
+```
+
+Running this will produce this in the Immediate window:
+
+> 10,000,000 Iteration Loop complete. Run time: 0.119140625 seconds.
+
+And in the external log file:
+
+> Debug Log file for Fred-the-Developer 0.1.0.xlsm
+> Logging powered by Fred the Developer (https://github.com/M-Scott-Lassiter/Fred-the-Developer) under the MIT license, Copyright (c) 2021.
+> Log created within Microsoft Excel by MSL on 02/21/2021 07:56:34.
+
+> 02/21/2021 07:57:17|MSL|10,000,000 Iteration Loop complete. Run time: 0.119140625 seconds.
+
+Every subsequent run will leave another log entry you can review later.
+
+## ModuleManager
+
+The `fredDeveloper_ModuleManager` class requires trusted access to the VBA module. If you have not granted that access (or can't), don't worry, VAB won't barrage you and your end users with run time errors because every property and method in this class will gracefully fail. If you do have this functionality though, you can use it to export and import class modules. This is particularly useful for git based source control. Although you won't be able to track git commits and changes real time in the IDE, git handles the exported code (all of which are just text files) like a champ. All of the files in [Source Code](/source code) were exported and tracked using a script like this:
+
+```VBA
+Sub FredDemonstrationModuleManager()
+    'Show how to export the four class modules in Fred to a directory on your computer
+    
+    Dim ModuleManager As New fredDeveloper_ModuleManager
+    
+    With ModuleManager
+        .Directory = ThisWorkbook.Path & "\Source Code"
+
+        .Export "fredDeveloper_Assert"
+        .Export "fredDeveloper_ClientSettings"
+        .Export "fredDeveloper_Events"
+        .Export "fredDeveloper_ModuleManager"
+    End With
+
+End Sub
+```
+
+# Project Roadmap
+
+This project is in beta.
 
 The next major addition is the [Assert class](/../../projects/1) which will take it to [version 1.0](/../../milestone/1).
 
 See the open [issues](/../../issues) to see what work is coming up. The [Bug Fixing](/../../projects/2) board tracks known bug status.
 
 
-### Contributing
+## Contributing
 
-This has been a solo project so far, but I welcome any contributions or feedback. To fix an issue,
+This has been a solo development project so far, but I welcome any contributions or feedback. To fix an issue,
 
 1. Fork the Project
-2. Create your Feature Branch (git checkout -b feature/AmazingFeature)
-3. Commit your Changes (git commit -m 'Add some AmazingFeature')
-4. Push to the Branch (git push origin feature/AmazingFeature)
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m "Add some AmazingFeature"`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+If you just want to flag it for me to handle, then just open a new issue.
 
 
 ## License
@@ -98,4 +216,4 @@ Distributed under the MIT License. See [LICENSE](/../../blob/main/LICENSE) for m
 
 ## Contact
 
-Reach me on Twitter [@mscottlassiter](https://twitter.com/MScottLassiter) or on [LinkedIn](https://www.linkedin.com/in/mscottlassiter/)
+Reach me on [LinkedIn](https://www.linkedin.com/in/mscottlassiter/) or Twitter [@mscottlassiter](https://twitter.com/MScottLassiter).
