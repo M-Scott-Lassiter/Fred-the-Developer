@@ -86,19 +86,19 @@ Public Property Get Count() As Integer
     
 End Property
 
-Public Property Get ClientSettingExists(ClientSetting As String) As Boolean
+Public Property Get Exists(ClientSetting As String) As Boolean
     'Attempts to set a variant equal to the setting. If it works, the setting obviously exists. If there's an error, then it doesn't.
     
     Dim SettingValue As Variant
     
     On Error Resume Next
     SettingValue = cdp(ClientSetting)
-    If Err <> 0 Then ClientSettingExists = False Else ClientSettingExists = True
+    If Err <> 0 Then Exists = False Else Exists = True
     On Error GoTo 0
     
 End Property
 
-Public Sub ReportSettings()
+Public Sub Report()
 
     Dim prop As Object
     Dim i As Integer
