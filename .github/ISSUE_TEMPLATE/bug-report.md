@@ -3,7 +3,7 @@ name: Bug Report
 about: Report bugs and unexpected behavior
 title: ''
 labels: bug
-assignees: ''
+assignees: m-scott-lassiter
 
 ---
 
