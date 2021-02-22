@@ -5,44 +5,44 @@ Fred consists of four different classes, each written 100% in VBA and completely
 This is an overview of Fred's class and method structure. Click on one of the links below to go to more detailed use information.
 
 ## fredDeveloper_Assert
-- AreEqual
-- AreNotEqual
-- Failed
-- Inconclusive
-- IsTrue
-- IsFalse
-- IsGreater
-- IsGreaterOrEqual
-- IsLess
-- IsLessOrEqual
-- IsInconclusive
-- Successful
-- Report
-
-## fredDeveloper_Events
-- Log
-- LoggingMode
-- LoggingFilePath
-- RestoreDefaultSetting
-- Tic
-- Toc
+- [Failed](Assert.md#failed)
+- [Inconclusive](Assert.md#inconclusive)
+- [IsEqual](Assert.md#isequal)
+- [IsFalse](Assert.md#isfalse)
+- [IsGreater](Assert.md#isgreater)
+- [IsGreaterOrEqual](Assert.md#isgreaterorequal)
+- [IsInconclusive](Assert.md#isinconclusive)
+- [IsLess](Assert.md#isless)
+- [IsLessOrEqual](Assert.md#islessorequal)
+- [IsNotEqual](Assert.md#isequal)
+- [IsTrue](Assert.md#istrue)
+- [Successful](Assert.md#successful)
+- [Report](Assert.md#report)
 
 ## fredDeveloper_ClientSettings
-- Add
-- Clear
-- Count
-- Delete
-- Exists
-- Report
+- [Add](ClientSettings.md#add)
+- [Clear](ClientSettings.md#clear)
+- [Count](ClientSettings.md#count)
+- [Delete](ClientSettings.md#delete)
+- [Exists](ClientSettings.md#exists)
+- [Report](ClientSettings.md#report)
+
+## fredDeveloper_Events
+- [Log](Events.md#log)
+- [LoggingFilePath](Events.md#loggingfilepath)
+- [LoggingMode](Events.md#loggingmode)
+- [RestoreDefaultSetting](Events.md#restoredefaultsetting)
+- [Tic](Events.md#tic)
+- [Toc](Events.md#toc)
 
 ## fredDeveloper_ModuleManager
-- CountAll
-- CountClasses
-- CountForms
-- CountModules
-- Directory
-- Export
-- Import
+- [CountAll](ModuleManager.md#countall)
+- [CountClasses](ModuleManager.md#countclasses)
+- [CountForms](ModuleManager.md#countforms)
+- [CountModules](ModuleManager.md#countmodules)
+- [Directory](ModuleManager.md#directory)
+- [Export](ModuleManager.md#export)
+- [Import](ModuleManager.md#import)
 
 
 # Properties
