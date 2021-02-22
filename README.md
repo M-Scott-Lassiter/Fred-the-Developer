@@ -12,7 +12,7 @@ I built this project to help VBA developers
 3) Write unit tests using various `Assert` methods
 4) Export and Import code modules, forms, or classes from within another VBA script
 
-Why 100% in VBA? Because my entire professional career has revolved around scant computer resources. The one ubiquitous constant was the Microsoft Office suite. If you are using a computer with Windows, chances are you have Office. While fully featured tools such as [RubberDuck VBA](https://rubberduckvba.com/) provides robust capabilities, we don't all have the luxury to install add-ins without system administrators permission.
+Why 100% in VBA? Because my entire professional career has revolved around scant computer resources. The one ubiquitous constant was the Microsoft Office suite. If you are using a computer with Windows, chances are you have Office. While fully featured tools such as [RubberDuck VBA](https://rubberduckvba.com/) provide robust capabilities, we don't all have the luxury to install add-ins without system administrator permission.
 
 Because I built Fred from 100% VBA class modules, you can simply add these modules to any macro enabled workbook, document, presentation, or more to flesh out your own robustly developed stand alone product.
 
