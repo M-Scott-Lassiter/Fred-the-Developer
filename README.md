@@ -58,10 +58,10 @@ Sub FredDemonstrationUnitTesting()
     
     Dim Assert As New fredDeveloper_Assert
     
-    Assert.AreEqual 1, 1, "Num1IsEqualToNum1"
-    Assert.AreEqual 1, "1", "String1EqualsNum1"         'Should fail, does not implicitly type convert
-    Assert.AreNotEqual 1, 2, "Num1NotEqualToNum2"
-    Assert.AreNotEqual 1, "1", "Num1NotEqualToString1"  'Should pass
+    Assert.IsEqual 1, 1, "Num1IsEqualToNum1"
+    Assert.IsEqual 1, "1", "String1EqualsNum1"         'Should fail, does not implicitly type convert
+    Assert.IsNotEqual 1, 2, "Num1NotEqualToNum2"
+    Assert.IsNotEqual 1, "1", "Num1NotEqualToString1"  'Should pass
     
     Assert.IsFalse 1 = 2, "FalseComparisonTest"
     Assert.IsTrue 1 = 1, "TrueComparisonTest"

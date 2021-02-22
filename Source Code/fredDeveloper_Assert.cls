@@ -53,7 +53,7 @@ Private Sub Class_Initialize()
 End Sub
 
 
-Public Sub AreEqual(Value1 As Variant, Value2 As Variant, TestName As String)
+Public Sub IsEqual(Value1 As Variant, Value2 As Variant, TestName As String)
     
     On Error GoTo TestInconclusivePoint
     
@@ -74,7 +74,7 @@ TestInconclusivePoint:
     
 End Sub
 
-Public Sub AreNotEqual(Value1 As Variant, Value2 As Variant, TestName As String)
+Public Sub IsNotEqual(Value1 As Variant, Value2 As Variant, TestName As String)
     
     On Error GoTo TestInconclusivePoint
     
