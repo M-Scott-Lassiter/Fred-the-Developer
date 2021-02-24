@@ -4,6 +4,8 @@ Fred consists of four different classes, each written 100% in VBA and completely
 
 This is an overview of Fred's class and method structure. Click on one of the links below to go to more detailed use information.
 
+**NOTE: Documentation is still under construction**
+
 ## fredDeveloper_Assert
 - [Failed](Assert.md#failed)
 - [Inconclusive](Assert.md#inconclusive)
