@@ -2,11 +2,9 @@
 
 This directory houses the demo [Demo.xlsm](Demo.xlsm) macro-enabled excel workbook to demo the features of the Fred-the-Developer ecosystem of VBA class modules.
 
-[TOC]
-
 ## Overview
 
-[Demo.xlsm](Demo.xlsm) contains all four of the [original class modules]("../Source Code"), renamed for simplicity, and an additional module [modDemo](src/modDemo.bas) to run the examples displaying the functionality for each class module. See the [src](src) folder (generated using the [Module Manager Class Module](src/clsModuleManager.cls)):
+[Demo.xlsm](Demo.xlsm) contains all four of the [original class modules](../Source%20Code), renamed for simplicity, and an additional module [modDemo](src/modDemo.bas) to run the examples displaying the functionality for each class module. See the [src](src) folder (generated using the [Module Manager Class Module](src/clsModuleManager.cls)):
 
 - [src/](src/):
   - Class Modules:
