@@ -1,5 +1,9 @@
-# Workbooks - Temporary while working
-*.xlsm
-
-# Log files
-*.txt
+~$*.xla
+~$*.xlam
+~$*.xls
+~$*.xlsb
+~$*.xlsm
+~$*.xlsx
+~$*.xlt
+~$*.xltm
+~$*.xltx
