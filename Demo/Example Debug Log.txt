@@ -1,0 +1,6 @@
+Debug Log file for Demo.xlsm
+Logging powered by Fred the Developer (https://github.com/M-Scott-Lassiter/Fred-the-Developer) under the MIT license, Copyright (c) 2021.
+Log created within Microsoft Excel by Jimmy Briggs on 05/23/2022 11:07:57.
+
+05/23/2022 11:07:57|Jimmy Briggs|10,000,000 Iteration Loop complete. Run time: 0.1171875 seconds.
+05/23/2022 11:07:59|Jimmy Briggs|10,000,000 Iteration Loop complete. Run time: 0.10546875 seconds.
